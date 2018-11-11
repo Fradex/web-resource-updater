@@ -2,15 +2,18 @@
 {
     public enum WebResourceType
 	{
-		HTML = 1,
-		CSS = 2,
-		JS = 3,
-		XML = 4,
-		PNG = 5,
-		JPG = 6,
-		GIF = 7,
-		XAP = 8,
-		XSL = 9,
-		ISO = 10
-	}
+        WebPage = 1,
+        Css = 2,
+        Script = 3,
+        Data = 4,
+        Png = 5,
+        Jpg = 6,
+        Gif = 7,
+        Silverlight = 8,
+        Xsl = 9,
+        Ico = 10,
+        Vector = 11,
+        Resx = 12,
+        Auto = 99
+    }
 }

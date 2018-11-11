@@ -1,13 +1,17 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using WebPackUpdater.Context;
 using WebPackUpdater.Domain;
 using WebPackUpdater.Domain.Interfaces;
 using WebPackUpdater.Generators;
 using WebPackUpdater.Generators.Interface;
+using WebPackUpdater.Repositories;
+using WebPackUpdater.Repositories.Interface;
 
 
 namespace WebPackUpdater
@@ -32,7 +36,10 @@ namespace WebPackUpdater
 				c.IncludeXmlComments(filePath);
 			});
 
-			services.AddSingleton(Configuration);
+            services.AddDbContext<WebResourceContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DbContext")));
+
+            services.AddSingleton(Configuration);
 
 			services.AddMvcCore(options =>
 				{
@@ -44,6 +51,8 @@ namespace WebPackUpdater
 
 			services.AddTransient<IConnectionService, ConnectionService>();
 			services.AddTransient<IScriptsGenerator, ScriptsGenerator>();
+			services.AddSingleton<IFileRepository, FilesRepository>();
+			services.AddSingleton<IWebResourceRepository, WebResourceRepository>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

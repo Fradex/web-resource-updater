@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Threading;
+using Microsoft.Extensions.Configuration;
 using WebPackUpdater.Enums;
 using WebPackUpdater.Generators.Interface;
 
@@ -9,7 +10,21 @@ namespace WebPackUpdater.Generators
 {
 	public class ScriptsGenerator : IScriptsGenerator
 	{
-		private List<string> errorsList = new List<string>();
+	    private IConfiguration Configuration { get; set; }
+
+	    private string ScriptsPath { get; set; } 
+
+	    public ScriptsGenerator(IConfiguration configuration)
+	    {
+	        Configuration = configuration;
+	        ScriptsPath = Configuration.GetSection("AppSettings")["WebPackFolder"];
+	        if (string.IsNullOrEmpty(ScriptsPath))
+	        {
+                throw new ArgumentException("Не задан путь до директории  со скриптами.");
+	        }
+	    }
+
+	    private List<string> errorsList = new List<string>();
 		private List<string> successList = new List<string>();
 		private bool isSuccess = true;
 
@@ -17,7 +32,7 @@ namespace WebPackUpdater.Generators
 		{
 			using (var powerShellInstance = PowerShell.Create())
 			{
-				powerShellInstance.AddScript("cd \"C:\\tfs_1\\Soglasie\\Main\\Norbit.Crm.Soglasie\\Norbit.Crm.Soglasie.WebResources\";npm run build;");
+                powerShellInstance.AddScript($"cd \"{ScriptsPath}\";npm run build;");
 				PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
 
 

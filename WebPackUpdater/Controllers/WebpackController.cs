@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebPackUpdater.Enums;
 using WebPackUpdater.Generators.Interface;
+using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Controllers
 {
@@ -9,9 +10,12 @@ namespace WebPackUpdater.Controllers
 	{
 		private IScriptsGenerator ScriptsGenerator { get; set; }
 
-		public WebpackController(IScriptsGenerator scriptsGenerator)
+	    private IFileRepository FileRepository { get; set; }
+
+	    public WebpackController(IScriptsGenerator scriptsGenerator, IFileRepository fileRepositor)
 		{
 			ScriptsGenerator = scriptsGenerator;
+		    FileRepository = fileRepositor;
 		}
 
 		/// <summary>
@@ -21,7 +25,9 @@ namespace WebPackUpdater.Controllers
 		[HttpPost, Route("Build")]
 		public ActionResult<BuildResult> Build()
 		{
-			return Ok(ScriptsGenerator.Build());
+            FileRepository.AutoMapFiles();
+
+            return Ok(ScriptsGenerator.Build());
 		}
 	}
 }

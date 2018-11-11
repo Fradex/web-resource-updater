@@ -4,5 +4,6 @@ namespace WebPackUpdater.Repositories
 {
     public class WebResourceUpdater: IWebResourceUpdater
     {
+        
     }
 }
