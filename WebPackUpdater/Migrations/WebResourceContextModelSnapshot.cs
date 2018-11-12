@@ -19,12 +19,28 @@ namespace WebPackUpdater.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("WebPackUpdater.Model.ChangedWebResource", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("ChangedDate");
+
+                    b.Property<Guid?>("WebResourceMapId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebResourceMapId");
+
+                    b.ToTable("ChangedWebResources");
+                });
+
             modelBuilder.Entity("WebPackUpdater.Model.WebResourceMap", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("ChangedOn");
+                    b.Property<DateTime>("CreatedOn");
 
                     b.Property<string>("CrmFileName");
 
@@ -39,6 +55,13 @@ namespace WebPackUpdater.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WebResourceMaps");
+                });
+
+            modelBuilder.Entity("WebPackUpdater.Model.ChangedWebResource", b =>
+                {
+                    b.HasOne("WebPackUpdater.Model.WebResourceMap", "WebResourceMap")
+                        .WithMany()
+                        .HasForeignKey("WebResourceMapId");
                 });
 #pragma warning restore 612, 618
         }

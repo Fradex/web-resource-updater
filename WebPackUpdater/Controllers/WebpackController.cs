@@ -25,9 +25,10 @@ namespace WebPackUpdater.Controllers
 		[HttpPost, Route("Build")]
 		public ActionResult<BuildResult> Build()
 		{
+		    var buildResult = ScriptsGenerator.Build();
             FileRepository.AutoMapFiles();
 
-            return Ok(ScriptsGenerator.Build());
+            return Ok(buildResult);
 		}
 	}
 }

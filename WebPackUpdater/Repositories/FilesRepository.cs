@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebPackUpdater.Context;
-using WebPackUpdater.Extensions;
 using WebPackUpdater.Helpers;
 using WebPackUpdater.Model;
 using WebPackUpdater.Repositories.Interface;
@@ -37,6 +34,9 @@ namespace WebPackUpdater.Repositories
 			}
 		}
 
+        /// <summary>
+        /// Автоматически сопоставить файлы и записать их в БД
+        /// </summary>
 		public void AutoMapFiles()
 		{
 			var buildDirectory = Path.Combine(ScriptsPath, Configuration.GetSection("AppSettings")["BuildDirectory"]);
@@ -51,8 +51,9 @@ namespace WebPackUpdater.Repositories
 			using (var context = ServiceProvider.GetService<WebResourceContext>())
 			{
 				var savedWebResources = context.WebResourceMaps.Select(x => x).ToList();
+                context.ChangedWebResources.RemoveRange(context.ChangedWebResources.Select(x => x).ToList());
 
-				foreach (var fileName in fileNames)
+                foreach (var fileName in fileNames)
 				{
 					var webResourceHash = CryptographyHelper.GetMd5Hash(fileName);
 
@@ -68,10 +69,9 @@ namespace WebPackUpdater.Repositories
 					}
 
 					savedWebResource = savedWebResource ?? new WebResourceMap();
-
 					savedWebResource.IsAutoUpdate = crmFileName.Contains("/ribbon") || crmFileName.Contains("/form");
 					savedWebResource.CrmFileName = crmFileName;
-					savedWebResource.ChangedOn = DateTime.Now;
+					savedWebResource.CreatedOn = DateTime.Now;
 					savedWebResource.LocalFileMd5Hash = webResourceHash;
 					savedWebResource.FileSystemPath = fileName;
 
@@ -81,7 +81,7 @@ namespace WebPackUpdater.Repositories
 						savedWebResource.CrmWebResourceId = crmWebResource.Id;
 					}
 
-					if (savedWebResource.Id == Guid.Empty)
+                    if (savedWebResource.Id == Guid.Empty)
 					{
 						context.WebResourceMaps.Add(savedWebResource);
 					}
@@ -89,6 +89,12 @@ namespace WebPackUpdater.Repositories
 					{
 						context.Entry(savedWebResource).State = EntityState.Modified;
 					}
+
+				    context.ChangedWebResources.Add(new ChangedWebResource
+				    {
+				        WebResourceMap = savedWebResource,
+				        ChangedDate = DateTime.Now
+				    });
 				}
                 context.SaveChanges();
             }

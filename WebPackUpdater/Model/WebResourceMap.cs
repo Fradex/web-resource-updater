@@ -5,7 +5,7 @@ namespace WebPackUpdater.Model
     public class WebResourceMap
     {
         public Guid Id { get; set; }
-        public DateTime ChangedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
         public Guid CrmWebResourceId { get; set; }
         public string FileSystemPath { get; set; }
         public string CrmFileName { get; set; }

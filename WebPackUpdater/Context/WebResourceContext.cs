@@ -15,6 +15,7 @@ namespace WebPackUpdater.Context
         }
 
         public virtual DbSet<WebResourceMap> WebResourceMaps { get; set; }
+        public virtual DbSet<ChangedWebResource> ChangedWebResources { get; set; }
 
         /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)

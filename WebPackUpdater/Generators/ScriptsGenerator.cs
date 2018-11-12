@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Management.Automation;
-using System.Threading;
 using Microsoft.Extensions.Configuration;
 using WebPackUpdater.Enums;
 using WebPackUpdater.Generators.Interface;
@@ -34,7 +33,6 @@ namespace WebPackUpdater.Generators
 			{
                 powerShellInstance.AddScript($"cd \"{ScriptsPath}\";npm run build;");
 				PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
-
 
 				// the streams (Error, Debug, Progress, etc) are available on the PowerShell instance.
 				// we can review them during or after execution.
