@@ -9,7 +9,7 @@ namespace WebPackUpdater.Model
         public Guid CrmWebResourceId { get; set; }
         public string FileSystemPath { get; set; }
         public string CrmFileName { get; set; }
-        public string CrmFileMd5Hash { get; set; }
         public string LocalFileMd5Hash { get; set; }
+	    public bool IsAutoUpdate { get; set; }
     }
 }

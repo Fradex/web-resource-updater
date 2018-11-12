@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,8 @@ namespace WebPackUpdater
 				c.IncludeXmlComments(filePath);
 			});
 
+			services.AddMvc();
+
             services.AddDbContext<WebResourceContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DbContext")));
 
@@ -61,9 +64,28 @@ namespace WebPackUpdater
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
+				app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+				{
+					HotModuleReplacement = true
+				});
+			}
+			else
+			{
+				app.UseExceptionHandler("/Home/Error");
 			}
 
-			app.UseMvc();
+			app.UseStaticFiles();
+
+			app.UseMvc(routes =>
+			{
+				routes.MapRoute(
+					name: "default",
+					template: "{controller=Home}/{action=Index}/{id?}");
+
+				routes.MapSpaFallbackRoute(
+					name: "spa-fallback",
+					defaults: new { controller = "Home", action = "Index" });
+			});
 
 			// Enable middleware to serve generated Swagger as a JSON endpoint.
 			app.UseSwagger();
