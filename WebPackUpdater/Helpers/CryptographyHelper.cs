@@ -11,7 +11,7 @@ namespace WebPackUpdater.Helpers
         {
             using (var md5 = MD5.Create())
             {
-                var text = File.ReadAllText(fileName);
+                var text = File.ReadAllText(fileName, Encoding.UTF8);
                 var bytes = Encoding.ASCII.GetBytes(text);
                 var hash = md5.ComputeHash(bytes);
                 return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();

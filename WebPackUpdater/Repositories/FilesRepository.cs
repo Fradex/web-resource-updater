@@ -89,10 +89,9 @@ namespace WebPackUpdater.Repositories
 					{
 						context.Entry(savedWebResource).State = EntityState.Modified;
 					}
-
-					context.SaveChanges();
 				}
-			}
+                context.SaveChanges();
+            }
 		}
 	}
 }
