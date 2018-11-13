@@ -15,7 +15,6 @@ namespace WebPackUpdater.Repositories
 	{
 		private IConfiguration Configuration { get; set; }
 		private IServiceProvider ServiceProvider { get; set; }
-
 		private IWebResourceRepository WebResourceRepository { get; set; }
 
 		private string ScriptsPath { get; set; }
@@ -34,10 +33,10 @@ namespace WebPackUpdater.Repositories
 			}
 		}
 
-        /// <summary>
-        /// Автоматически сопоставить файлы и записать их в БД
-        /// </summary>
-		public void AutoMapFiles()
+		/// <summary>
+		/// Автоматически сопоставить файлы и записать их в БД
+		/// </summary>
+		public void AutoMapFiles(Build build)
 		{
 			var buildDirectory = Path.Combine(ScriptsPath, Configuration.GetSection("AppSettings")["BuildDirectory"]);
 
@@ -51,9 +50,9 @@ namespace WebPackUpdater.Repositories
 			using (var context = ServiceProvider.GetService<WebResourceContext>())
 			{
 				var savedWebResources = context.WebResourceMaps.Select(x => x).ToList();
-                context.ChangedWebResources.RemoveRange(context.ChangedWebResources.Select(x => x).ToList());
+				context.ChangedWebResources.RemoveRange(context.ChangedWebResources.Select(x => x).ToList());
 
-                foreach (var fileName in fileNames)
+				foreach (var fileName in fileNames)
 				{
 					var webResourceHash = CryptographyHelper.GetMd5Hash(fileName);
 
@@ -81,7 +80,7 @@ namespace WebPackUpdater.Repositories
 						savedWebResource.CrmWebResourceId = crmWebResource.Id;
 					}
 
-                    if (savedWebResource.Id == Guid.Empty)
+					if (savedWebResource.Id == Guid.Empty)
 					{
 						context.WebResourceMaps.Add(savedWebResource);
 					}
@@ -90,14 +89,16 @@ namespace WebPackUpdater.Repositories
 						context.Entry(savedWebResource).State = EntityState.Modified;
 					}
 
-				    context.ChangedWebResources.Add(new ChangedWebResource
-				    {
-				        WebResourceMap = savedWebResource,
-				        ChangedDate = DateTime.Now
-				    });
+					context.ChangedWebResources.Add(new ChangedWebResource
+					{
+						Build = build,
+						WebResourceMap = savedWebResource,
+						ChangedDate = DateTime.Now
+					});
 				}
-                context.SaveChanges();
-            }
+
+				context.SaveChanges();
+			}
 		}
 	}
 }

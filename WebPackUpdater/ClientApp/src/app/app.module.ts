@@ -5,28 +5,36 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { BuildModule } from "./builds/build.module";
+import { BuildComponent } from './builds/build.component';
+import { CartDetailComponent } from "./builds/cartDetail.component";
+import { NgxSpinnerModule } from 'ngx-spinner';
+
 
 @NgModule({
   declarations: [
-    AppComponent,
-    NavMenuComponent,
-    HomeComponent,
-    CounterComponent,
-    FetchDataComponent
+    AppComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserModule,
     HttpClientModule,
     FormsModule,
+    BuildModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-    ])
+      {
+        path: "build", component: BuildComponent
+      },
+      {
+        path: "cart", component: CartDetailComponent
+      },
+      //{
+      //  path: "admin",
+      //  loadChildren: "app/admin/admin.module#AdminModule",
+      //  canActivate: [StoreFirstGuard]
+      //},
+      { path: "**", redirectTo: "/build" }
+    ]),
+    NgxSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

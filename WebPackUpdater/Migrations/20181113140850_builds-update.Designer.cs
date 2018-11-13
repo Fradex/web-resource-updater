@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebPackUpdater.Context;
 
 namespace WebPackUpdater.Migrations
 {
     [DbContext(typeof(WebResourceContext))]
-    partial class WebResourceContextModelSnapshot : ModelSnapshot
+    [Migration("20181113140850_builds-update")]
+    partial class buildsupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

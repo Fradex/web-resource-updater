@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using WebPackUpdater.Enums;
 using WebPackUpdater.Generators.Interface;
+using WebPackUpdater.Model;
 using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Controllers
@@ -9,13 +11,15 @@ namespace WebPackUpdater.Controllers
 	public class WebpackController : ControllerBase
 	{
 		private IScriptsGenerator ScriptsGenerator { get; set; }
+		private IFileRepository FileRepository { get; set; }
+		private IBuildRepository BuildRepository { get; set; }
 
-	    private IFileRepository FileRepository { get; set; }
-
-	    public WebpackController(IScriptsGenerator scriptsGenerator, IFileRepository fileRepositor)
+		public WebpackController(IScriptsGenerator scriptsGenerator, IFileRepository fileRepositor,
+			IBuildRepository buildRepository)
 		{
 			ScriptsGenerator = scriptsGenerator;
-		    FileRepository = fileRepositor;
+			FileRepository = fileRepositor;
+			BuildRepository = buildRepository;
 		}
 
 		/// <summary>
@@ -23,12 +27,29 @@ namespace WebPackUpdater.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[HttpPost, Route("Build")]
-		public ActionResult<BuildResult> Build()
+		public ActionResult<BuildResult> Build([FromBody] BuildRequestModel model)
 		{
-		    var buildResult = ScriptsGenerator.Build();
-            FileRepository.AutoMapFiles();
+			if (!ModelState.IsValid)
+			{
+				return BadRequest();
+			}
 
-            return Ok(buildResult);
+			BuildResult buildResult;
+			var build = BuildRepository.Create(model.Name, model.Description);
+
+			try
+			{
+				buildResult = ScriptsGenerator.Build(build);
+				FileRepository.AutoMapFiles(build);
+			}
+			catch
+			{
+				build.BuildStatusType = BuildStatusType.ExitWithErrors;
+				BuildRepository.Update(build);
+				throw;
+			}
+
+			return Ok(buildResult);
 		}
 	}
 }

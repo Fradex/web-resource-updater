@@ -1,37 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Management.Automation;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using WebPackUpdater.Enums;
 using WebPackUpdater.Generators.Interface;
+using WebPackUpdater.Model;
+using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Generators
 {
 	public class ScriptsGenerator : IScriptsGenerator
 	{
-	    private IConfiguration Configuration { get; set; }
+		private IConfiguration Configuration { get; set; }
+		private IBuildRepository BuildRepository { get; set; }
 
-	    private string ScriptsPath { get; set; } 
+		private string ScriptsPath { get; set; }
 
-	    public ScriptsGenerator(IConfiguration configuration)
-	    {
-	        Configuration = configuration;
-	        ScriptsPath = Configuration.GetSection("AppSettings")["WebPackFolder"];
-	        if (string.IsNullOrEmpty(ScriptsPath))
-	        {
-                throw new ArgumentException("Не задан путь до директории  со скриптами.");
-	        }
-	    }
+		public ScriptsGenerator(IConfiguration configuration, IBuildRepository buildRepository)
+		{
+			Configuration = configuration;
+			BuildRepository = buildRepository;
 
-	    private List<string> errorsList = new List<string>();
-		private List<string> successList = new List<string>();
+			ScriptsPath = Configuration.GetSection("AppSettings")["WebPackFolder"];
+			if (string.IsNullOrEmpty(ScriptsPath))
+			{
+				throw new ArgumentException("Не задан путь до директории  со скриптами.");
+			}
+		}
+
+		private StringBuilder errorsList = new StringBuilder();
+		private StringBuilder successList = new StringBuilder();
 		private bool isSuccess = true;
 
-		public BuildResult Build()
+		public BuildResult Build(Build build)
 		{
 			using (var powerShellInstance = PowerShell.Create())
 			{
-                powerShellInstance.AddScript($"cd \"{ScriptsPath}\";npm run build;");
+				powerShellInstance.AddScript($"cd \"{ScriptsPath}\";npm run build;");
 				PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
 
 				// the streams (Error, Debug, Progress, etc) are available on the PowerShell instance.
@@ -55,20 +60,28 @@ namespace WebPackUpdater.Generators
 
 				foreach (var outputItem in outputCollection.ReadAll())
 				{
-					//TODO: handle/process the output items if required
-					successList.Add(outputItem.BaseObject.ToString());
+					successList.Append(outputItem.BaseObject);
 				}
 
-				return new BuildResult() {ErrorList = errorsList,SuccessList = successList, IsSuccess = isSuccess};
+				//update build log
+				build.BuildLog = successList.ToString();
+				BuildRepository.Update(build);
+
+				return new BuildResult
+				{
+					ErrorText = errorsList.ToString(),
+					SuccessText = successList.ToString(),
+					IsSuccess = isSuccess
+				};
 			}
 
 			void OutputCollectionDataAdded(object sender, DataAddedEventArgs e)
 			{
-				using (var dataList = (PSDataCollection<PSObject>)sender)
+				using (var dataList = (PSDataCollection<PSObject>) sender)
 				{
 					foreach (var data in dataList.ReadAll())
 					{
-						successList.Add(data.ToString());
+						successList.Append(data);
 					}
 				}
 
@@ -79,11 +92,11 @@ namespace WebPackUpdater.Generators
 			void ErrorDataAdded(object sender, DataAddedEventArgs e)
 			{
 				using (var errorDataList =
-					(PSDataCollection<ErrorRecord>)sender)
+					(PSDataCollection<ErrorRecord>) sender)
 				{
 					foreach (var errorData in errorDataList.ReadAll())
 					{
-						errorsList.Add(errorData.ToString());
+						errorsList.Append(errorData);
 					}
 
 					isSuccess = false;

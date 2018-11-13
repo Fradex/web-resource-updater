@@ -1,7 +1,9 @@
-﻿namespace WebPackUpdater.Repositories.Interface
+﻿using WebPackUpdater.Model;
+
+namespace WebPackUpdater.Repositories.Interface
 {
     public interface IFileRepository
     {
-        void AutoMapFiles();
+        void AutoMapFiles(Build build);
     }
 }

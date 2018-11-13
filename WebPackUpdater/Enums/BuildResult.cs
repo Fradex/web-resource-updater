@@ -5,7 +5,7 @@ namespace WebPackUpdater.Enums
 	public class BuildResult
 	{
 		public bool IsSuccess { get; set; }
-		public List<string> SuccessList { get; set; }
-		public List<string> ErrorList { get; set; }
+		public string SuccessText { get; set; }
+		public string ErrorText { get; set; }
 	}
 }

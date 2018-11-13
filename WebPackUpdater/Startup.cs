@@ -66,6 +66,7 @@ namespace WebPackUpdater
             services.AddTransient<IScriptsGenerator, ScriptsGenerator>();
             services.AddTransient<IFileRepository, FilesRepository>();
             services.AddTransient<IWebResourceRepository, WebResourceRepository>();
+            services.AddTransient<IBuildRepository, BuildRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
