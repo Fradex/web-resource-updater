@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebPackUpdater.Model;
 using WebPackUpdater.Repositories.Interface;
@@ -8,46 +10,46 @@ using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Controllers
 {
-	[Route("api/[controller]")]
-	public class BuildController : Controller
-	{
-		private IBuildRepository BuildRepository { get; set; }
+    [Route("api/[controller]")]
+    public class BuildController : Controller
+    {
+        private IBuildRepository BuildRepository { get; set; }
 
-		public BuildController(IBuildRepository buildRepository)
-		{
-			BuildRepository = buildRepository;
-		}
+        public BuildController(IBuildRepository buildRepository)
+        {
+            BuildRepository = buildRepository;
+        }
 
-		// GET: api/<controller>
-		[HttpGet]
-		public IEnumerable<Build> Get()
-		{
-			return BuildRepository.GetAll();
-		}
+        // GET: api/<controller>
+        [HttpGet]
+        public Task<IEnumerable<Build>> Get()
+        {
+            return BuildRepository.GetAllAsync();
+        }
 
-		// GET api/<controller>/5
-		[HttpGet("{id}")]
-		public string Get(int id)
-		{
-			return "value";
-		}
+        // GET api/<controller>/5
+        [HttpGet("{id}")]
+        public Task<Build> Get(Guid? id)
+        {
+            return BuildRepository.GetAsync(id);
+        }
 
-		// POST api/<controller>
-		[HttpPost]
-		public void Post([FromBody] string value)
-		{
-		}
+        // POST api/<controller>
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
 
-		// PUT api/<controller>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
-		{
-		}
+        // PUT api/<controller>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
 
-		// DELETE api/<controller>/5
-		[HttpDelete("{id}")]
-		public void Delete(int id)
-		{
-		}
-	}
+        // DELETE api/<controller>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+    }
 }

@@ -41,7 +41,9 @@ namespace WebPackUpdater.Controllers
 			{
 				buildResult = ScriptsGenerator.Build(build);
 				FileRepository.AutoMapFiles(build);
-			}
+                build.BuildStatusType = BuildStatusType.ExitSuccess;
+                BuildRepository.Update(build);
+            }
 			catch
 			{
 				build.BuildStatusType = BuildStatusType.ExitWithErrors;

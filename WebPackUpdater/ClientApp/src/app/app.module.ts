@@ -7,8 +7,8 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { BuildModule } from "./builds/build.module";
 import { BuildComponent } from './builds/build.component';
-import { CartDetailComponent } from "./builds/cartDetail.component";
-import { NgxSpinnerModule } from 'ngx-spinner';
+import { BuildDetailComponent } from "./builds/buildDetail.component";
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 
 
 @NgModule({
@@ -25,7 +25,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
         path: "build", component: BuildComponent
       },
       {
-        path: "cart", component: CartDetailComponent
+        path: 'build/:id',        
+        component: BuildDetailComponent
       },
       //{
       //  path: "admin",
@@ -33,8 +34,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
       //  canActivate: [StoreFirstGuard]
       //},
       { path: "**", redirectTo: "/build" }
-    ]),
-    NgxSpinnerModule
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]

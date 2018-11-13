@@ -11,94 +11,94 @@ using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Repositories
 {
-	public class FilesRepository : IFileRepository
-	{
-		private IConfiguration Configuration { get; set; }
-		private IServiceProvider ServiceProvider { get; set; }
-		private IWebResourceRepository WebResourceRepository { get; set; }
+    public class FilesRepository : IFileRepository
+    {
+        private IConfiguration Configuration { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
+        private IWebResourceRepository WebResourceRepository { get; set; }
 
-		private string ScriptsPath { get; set; }
+        private WebResourceContext WebResourceContext { get; set; }
 
-		public FilesRepository(IConfiguration configuration,
-			IWebResourceRepository webResourceRepository, IServiceProvider serviceProvider)
-		{
-			Configuration = configuration;
-			WebResourceRepository = webResourceRepository;
-			ServiceProvider = serviceProvider;
+        private string ScriptsPath { get; set; }
 
-			ScriptsPath = Configuration.GetSection("AppSettings")["WebPackFolder"];
-			if (string.IsNullOrEmpty(ScriptsPath))
-			{
-				throw new ArgumentException("Не задан путь до директории  со скриптами.");
-			}
-		}
+        public FilesRepository(IConfiguration configuration,
+            IWebResourceRepository webResourceRepository, IServiceProvider serviceProvider, WebResourceContext webResourceContext)
+        {
+            Configuration = configuration;
+            WebResourceRepository = webResourceRepository;
+            ServiceProvider = serviceProvider;
+            WebResourceContext = webResourceContext;
 
-		/// <summary>
-		/// Автоматически сопоставить файлы и записать их в БД
-		/// </summary>
-		public void AutoMapFiles(Build build)
-		{
-			var buildDirectory = Path.Combine(ScriptsPath, Configuration.GetSection("AppSettings")["BuildDirectory"]);
+            ScriptsPath = Configuration.GetSection("AppSettings")["WebPackFolder"];
+            if (string.IsNullOrEmpty(ScriptsPath))
+            {
+                throw new ArgumentException("Не задан путь до директории  со скриптами.");
+            }
+        }
 
-			if (!Directory.Exists(buildDirectory))
-			{
-				throw new DirectoryNotFoundException("Не найдена директория со скриптами!.");
-			}
+        /// <summary>
+        /// Автоматически сопоставить файлы и записать их в БД
+        /// </summary>
+        public void AutoMapFiles(Build build)
+        {
+            var buildDirectory = Path.Combine(ScriptsPath, Configuration.GetSection("AppSettings")["BuildDirectory"]);
 
-			var fileNames = Directory.GetFiles(buildDirectory, "*.js", SearchOption.AllDirectories);
+            if (!Directory.Exists(buildDirectory))
+            {
+                throw new DirectoryNotFoundException("Не найдена директория со скриптами!.");
+            }
 
-			using (var context = ServiceProvider.GetService<WebResourceContext>())
-			{
-				var savedWebResources = context.WebResourceMaps.Select(x => x).ToList();
-				context.ChangedWebResources.RemoveRange(context.ChangedWebResources.Select(x => x).ToList());
+            var fileNames = Directory.GetFiles(buildDirectory, "*.js", SearchOption.AllDirectories);
 
-				foreach (var fileName in fileNames)
-				{
-					var webResourceHash = CryptographyHelper.GetMd5Hash(fileName);
+            var savedWebResources = WebResourceContext.WebResourceMaps.Select(x => x).ToList();
+            WebResourceContext.ChangedWebResources.RemoveRange(WebResourceContext.ChangedWebResources.Select(x => x).ToList());
 
-					var index = fileName.IndexOf("new_", StringComparison.Ordinal);
-					var crmFileName = fileName.Substring(index, fileName.Length - index).Replace("\\", "/")
-						.Replace(".bundle", "");
+            foreach (var fileName in fileNames)
+            {
+                var webResourceHash = CryptographyHelper.GetMd5Hash(fileName);
 
-					var savedWebResource = savedWebResources.FirstOrDefault(x => x.CrmFileName == crmFileName);
+                var index = fileName.IndexOf("new_", StringComparison.Ordinal);
+                var crmFileName = fileName.Substring(index, fileName.Length - index).Replace("\\", "/")
+                    .Replace(".bundle", "");
 
-					if (savedWebResource?.LocalFileMd5Hash == webResourceHash)
-					{
-						continue;
-					}
+                var savedWebResource = savedWebResources.FirstOrDefault(x => x.CrmFileName == crmFileName);
 
-					savedWebResource = savedWebResource ?? new WebResourceMap();
-					savedWebResource.IsAutoUpdate = crmFileName.Contains("/ribbon") || crmFileName.Contains("/form");
-					savedWebResource.CrmFileName = crmFileName;
-					savedWebResource.CreatedOn = DateTime.Now;
-					savedWebResource.LocalFileMd5Hash = webResourceHash;
-					savedWebResource.FileSystemPath = fileName;
+                if (savedWebResource?.LocalFileMd5Hash == webResourceHash)
+                {
+                    continue;
+                }
 
-					var crmWebResource = WebResourceRepository.RetrieveWebresource(crmFileName);
-					if (crmWebResource != null)
-					{
-						savedWebResource.CrmWebResourceId = crmWebResource.Id;
-					}
+                savedWebResource = savedWebResource ?? new WebResourceMap();
+                savedWebResource.IsAutoUpdate = crmFileName.Contains("/ribbon") || crmFileName.Contains("/form");
+                savedWebResource.CrmFileName = crmFileName;
+                savedWebResource.CreatedOn = DateTime.Now;
+                savedWebResource.LocalFileMd5Hash = webResourceHash;
+                savedWebResource.FileSystemPath = fileName;
 
-					if (savedWebResource.Id == Guid.Empty)
-					{
-						context.WebResourceMaps.Add(savedWebResource);
-					}
-					else
-					{
-						context.Entry(savedWebResource).State = EntityState.Modified;
-					}
+                var crmWebResource = WebResourceRepository.RetrieveWebresource(crmFileName);
+                if (crmWebResource != null)
+                {
+                    savedWebResource.CrmWebResourceId = crmWebResource.Id;
+                }
 
-					context.ChangedWebResources.Add(new ChangedWebResource
-					{
-						Build = build,
-						WebResourceMap = savedWebResource,
-						ChangedDate = DateTime.Now
-					});
-				}
+                if (savedWebResource.Id == Guid.Empty)
+                {
+                    WebResourceContext.WebResourceMaps.Add(savedWebResource);
+                }
+                else
+                {
+                    WebResourceContext.Entry(savedWebResource).State = EntityState.Modified;
+                }
 
-				context.SaveChanges();
-			}
-		}
-	}
+                WebResourceContext.ChangedWebResources.Add(new ChangedWebResource
+                {
+                    Build = build,
+                    WebResourceMap = savedWebResource,
+                    ChangedDate = DateTime.Now
+                });
+            }
+
+            WebResourceContext.SaveChanges();
+        }
+    }
 }

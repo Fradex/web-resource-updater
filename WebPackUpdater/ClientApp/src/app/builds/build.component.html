@@ -5,26 +5,17 @@
     <button class="btn btn-block btn-outline-primary"
             (click)="runFastBuild()">
         Быстрый билд скриптов
-    </button>
-    <button *ngFor="let cat of categories"
-            class="btn btn-outline-primary btn-block"
-            [class.active]="cat == selectedCategory"
-            (click)="changeCategory(cat)">
-        {{cat}}
-    </button>
-    <button class="btn btn-block btn-danger m-t-3" routerLink="/admin">
-        Admin
-    </button>    
+    </button>   
 </div>  
 <div class="col-xs-9 p-a-1">  
     <div *ngFor="let build of builds" class="card card-outline-primary">
       <h4 class="card-header">
         {{build.buildName}}
       </h4>
-      <div class="card-text p-a-1">
+      <div class="card-text p-a-1" [class]="build.buildStatusType==2 ? 'alert alert-success':'alert alert-danger'">
         {{build.buildDescription}}
         <button class="btn btn-success btn-sm pull-xs-right"
-                (click)="addProductToCart(build)">
+                (click)="openBuildDetail(build)">
           Детали
         </button>
       </div>
@@ -45,4 +36,4 @@
         </button>
     </div>     
 </div>
-<ngx-spinner></ngx-spinner>
+<ng4-loading-spinner [timeout]="120000"> </ng4-loading-spinner>

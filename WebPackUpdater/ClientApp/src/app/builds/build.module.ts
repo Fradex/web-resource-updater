@@ -4,13 +4,13 @@ import { FormsModule } from "@angular/forms";
 import { ModelModule } from "../model/model.module";
 import { BuildComponent } from "./build.component";
 import { CounterDirective } from "./counter.directive";
-import { CartDetailComponent } from "./cartDetail.component";
+import { BuildDetailComponent } from "./buildDetail.component";
 import { RouterModule } from "@angular/router";
-
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 
 @NgModule({
-  imports: [ModelModule, BrowserModule, FormsModule, RouterModule],
-  declarations: [BuildComponent, CounterDirective, CartDetailComponent],
+  imports: [Ng4LoadingSpinnerModule.forRoot(), ModelModule, BrowserModule, FormsModule, RouterModule],
+  declarations: [BuildComponent, CounterDirective, BuildDetailComponent],
   exports: [BuildComponent]
 })
 export class BuildModule { }

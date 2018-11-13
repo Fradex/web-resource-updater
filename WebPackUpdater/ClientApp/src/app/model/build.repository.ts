@@ -1,42 +1,49 @@
 import { Injectable } from "@angular/core";
 import { Build } from "./build.model";
 import { RestDataSource } from "./rest.datasource";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class BuildRepository {
-    private builds: Build[] = [];
+  private builds: Build[] = [];
 
-    constructor(private dataSource: RestDataSource) {
-        dataSource.getBuilds().subscribe(data => {
-            this.builds = data;
-        });
-    }
+  constructor(private dataSource: RestDataSource) {
+    dataSource.getBuilds().subscribe(data => {
+      this.builds = data;
+    });
+  }
 
-    getProducts(category: string = null): Build[] {
-      return this.builds;
-    }
+  refreshProducts() {
+    this.dataSource.getBuilds().subscribe(data => {
+      this.builds = data;
+    });
+  }
 
-    getProduct(id: number): Build {
-        return this.builds.find(p => p.id == id);
-    }
+  getBuilds(category: string = null): Build[] {
+    return this.builds;
+  }
 
-    saveProduct(build: Build) {
-      if (build.id == null || build.id == 0) {
-        this.dataSource.saveBuild(build)
-          .subscribe(p => this.builds.push(p));
-        } else {
-        this.dataSource.updateBuild(build)
-                .subscribe(p => {
-                  this.builds.splice(this.builds.
-                    findIndex(p => p.id == build.id), 1, build);
-                });
-        }
-    }
+  getBuild(id: string): Observable<Build> {
+      return this.dataSource.getBuild(id);
+  }
 
-    deleteProduct(id: number) {
-        this.dataSource.deleteBuild(id).subscribe(p => {
+  saveBuild(build: Build) {
+    if (build.id == null || build.id == 0) {
+      this.dataSource.saveBuild(build)
+        .subscribe(p => this.builds.push(p));
+    } else {
+      this.dataSource.updateBuild(build)
+        .subscribe(p => {
           this.builds.splice(this.builds.
-                findIndex(p => p.id == id), 1);            
+            findIndex(p => p.id == build.id), 1, build);
         });
     }
+  }
+
+  deleteBuild(id: number) {
+    this.dataSource.deleteBuild(id).subscribe(p => {
+      this.builds.splice(this.builds.
+        findIndex(p => p.id == id), 1);
+    });
+  }
 }

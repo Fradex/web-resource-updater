@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebPackUpdater.Model;
 
 namespace WebPackUpdater.Repositories.Interface
@@ -7,6 +9,7 @@ namespace WebPackUpdater.Repositories.Interface
 	{
 		Build Create(string buildName, string description = null);
 		Build Update(Build build);
-		IEnumerable<Build> GetAll();
+	    Task<IEnumerable<Build>> GetAllAsync();
+        Task<Build> GetAsync(Guid? id);
 	}
 }

@@ -2,9 +2,9 @@ import { Component, Inject } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { Build } from "../model/build.model";
 import { BuildRepository } from "../model/build.repository";
-import { Cart } from "../model/cart.model";
+import { BuildDetails } from "../model/buildDetail.model";
 import { Router } from "@angular/router";
-import { NgxSpinnerService } from 'ngx-spinner';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Component({
   selector: "build",
@@ -19,17 +19,17 @@ export class BuildComponent {
   public loading = false;
 
   constructor(private repository: BuildRepository,
-    private cart: Cart,
+    private buildDetail: BuildDetails,
     private router: Router,
     private http: HttpClient,
-    private spinner: NgxSpinnerService,
+    private spinnerService: Ng4LoadingSpinnerService,
     @Inject('BASE_URL') baseUrl: string) {
     this.baseUrl = baseUrl;
   }
 
   get builds(): Build[] {
     let pageIndex = (this.selectedPage - 1) * this.buildsPerPage;
-    return this.repository.getProducts(this.selectedCategory)
+    return this.repository.getBuilds(this.selectedCategory)
       .slice(pageIndex, pageIndex + this.buildsPerPage);
   }
 
@@ -43,25 +43,27 @@ export class BuildComponent {
   }
 
   runFastBuild() {
-    this.spinner.show();
+    this.spinnerService.show();
     this.http.post(this.baseUrl + 'api/Webpack/Build', { description: 'Webpack Fast Build. Run from web.', name: 'Webpack Fast Build.' })
       .subscribe(result => {
-          this.spinner.hide();
-        },
-      error => {
-        console.error(error);
-        this.spinner.hide();
-      });
+        this.spinnerService.hide();
+        this.repository.refreshProducts();
+      },
+        error => {
+          console.error(error);
+          this.spinnerService.hide();
+          this.repository.refreshProducts();
+        });
   }
 
   get pageCount(): number {
     return Math.ceil(this.repository
-      .getProducts(this.selectedCategory).length /
+      .getBuilds(this.selectedCategory).length /
       this.buildsPerPage);
   }
 
-  addProductToCart(build: Build) {
-    this.cart.addLine(build);
-    this.router.navigateByUrl("/cart");
+  openBuildDetail(build: Build) {
+    this.buildDetail.OpenedBuild(build);
+    this.router.navigateByUrl("/build/" + build.id);
   }
 }

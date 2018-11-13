@@ -33,6 +33,10 @@ export class RestDataSource {
     return this.sendRequest(RequestMethod.Get, "api/Build") as Observable<Build[]>;
   }
 
+  getBuild(id: string): Observable<Build> {
+    return this.sendRequest(RequestMethod.Get, "api/Build/" + id) as Observable<Build>;
+  }
+
   saveBuild(build: Build): Observable<Build> {
     return this.sendRequest(RequestMethod.Post, "api/Build",
       build, true) as Observable<Build>;

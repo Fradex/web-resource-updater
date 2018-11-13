@@ -60,7 +60,7 @@ namespace WebPackUpdater.Generators
 
 				foreach (var outputItem in outputCollection.ReadAll())
 				{
-					successList.Append(outputItem.BaseObject);
+					successList.AppendLine(outputItem.BaseObject.ToString());
 				}
 
 				//update build log
@@ -81,7 +81,7 @@ namespace WebPackUpdater.Generators
 				{
 					foreach (var data in dataList.ReadAll())
 					{
-						successList.Append(data);
+						successList.AppendLine(data.ToString());
 					}
 				}
 
@@ -96,7 +96,7 @@ namespace WebPackUpdater.Generators
 				{
 					foreach (var errorData in errorDataList.ReadAll())
 					{
-						errorsList.Append(errorData);
+						errorsList.AppendLine(errorData.ToString());
 					}
 
 					isSuccess = false;
