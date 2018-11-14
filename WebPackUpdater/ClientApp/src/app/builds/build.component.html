@@ -1,6 +1,7 @@
 <div class="navbar navbar-inverse bg-inverse">  
     <a class="navbar-brand">Webpack Builds</a>  
-</div>  
+</div>
+
 <div class="col-xs-3 p-a-1">  
     <button class="btn btn-block btn-outline-primary"
             (click)="runFastBuild()">
@@ -36,4 +37,5 @@
         </button>
     </div>     
 </div>
-<ng4-loading-spinner [timeout]="120000"> </ng4-loading-spinner>
+<ng4-loading-spinner [timeout]="120000" [loadingText]="'Подождите...'"> </ng4-loading-spinner>
+<notifier-container></notifier-container>

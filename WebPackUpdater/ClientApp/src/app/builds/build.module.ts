@@ -7,9 +7,10 @@ import { CounterDirective } from "./counter.directive";
 import { BuildDetailComponent } from "./buildDetail.component";
 import { RouterModule } from "@angular/router";
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { NotifierModule } from 'angular-notifier';
 
 @NgModule({
-  imports: [Ng4LoadingSpinnerModule.forRoot(), ModelModule, BrowserModule, FormsModule, RouterModule],
+  imports: [Ng4LoadingSpinnerModule.forRoot(), ModelModule, BrowserModule, FormsModule, RouterModule, NotifierModule],
   declarations: [BuildComponent, CounterDirective, BuildDetailComponent],
   exports: [BuildComponent]
 })

@@ -5,6 +5,7 @@ import { BuildRepository } from "../model/build.repository";
 import { BuildDetails } from "../model/buildDetail.model";
 import { Router } from "@angular/router";
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: "build",
@@ -23,6 +24,7 @@ export class BuildComponent {
     private router: Router,
     private http: HttpClient,
     private spinnerService: Ng4LoadingSpinnerService,
+    private notifierService: NotifierService,
     @Inject('BASE_URL') baseUrl: string) {
     this.baseUrl = baseUrl;
   }
@@ -44,13 +46,16 @@ export class BuildComponent {
 
   runFastBuild() {
     this.spinnerService.show();
-    this.http.post(this.baseUrl + 'api/Webpack/Build', { description: 'Webpack Fast Build. Run from web.', name: 'Webpack Fast Build.' })
+    this.notifierService.notify('info', 'Запущен билд!');
+    this.http.post(this.baseUrl + 'api/Webpack/Build', { description: 'Билд скриптов при помощи webpack', name: 'Webpack' })
       .subscribe(result => {
         this.spinnerService.hide();
         this.repository.refreshProducts();
+        this.notifierService.notify('success', 'Билд успешно завершен!');
       },
         error => {
           console.error(error);
+          this.notifierService.notify('error', 'Билд упал!');
           this.spinnerService.hide();
           this.repository.refreshProducts();
         });

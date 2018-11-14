@@ -2,9 +2,9 @@
   <a class="navbar-brand">Детали билда</a>
 </div>
 
-<div class="row">
-  <button class="btn btn-primary m-t-1 m-l-2" routerLink="/build">Назад</button>
-</div>
+<button class="btn btn-primary m-t-1 m-l-2" routerLink="/build">
+  Назад
+</button>
 
 <style>
   .card-flexible {
@@ -13,31 +13,36 @@
     height: 80vh;
   }
 
+    .card-flexible > *:not(:last-child) {
+      margin-bottom: 32px;
+    }
 
-  .card-flexible > *:not(:last-child) { margin-bottom: 32px; }
+  .text-newlines {
+    white-space: pre-wrap;
+  }
 </style>
 
 <div class="card-flexible">
   <div class="m-a-1">
     <table class="table table-bordered table-striped p-a-1">
       <thead>
-      <tr>
-        <th>Наименование измененного скрипта</th>
-        <th ></th>
-      </tr>
+        <tr>
+          <th>Наименование измененного скрипта</th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngIf="editedScripts == 0">
-        <td colspan="2" class="text-xs-center">
-          Your cart is empty
-        </td>
-      </tr>
-      <tr *ngFor="let webResource of webResources">
-        <td>{{webResource.crmFileName}}</td>
-        <td class="text-xs-center">
-          <input type="checkbox" [checked]="webResource.isAutoUpdate" (change)="webResource.isAutoUpdate = !webResource.isAutoUpdate"/>
-        </td>
-      </tr>
+        <tr *ngIf="webResources.length == 0">
+          <td colspan="2" class="text-xs-center">
+            Скриптов не найдено
+          </td>
+        </tr>
+        <tr *ngFor="let webResource of webResources">
+          <td>{{webResource.crmFileName}}</td>
+          <td class="text-xs-center">
+            <input type="checkbox" [checked]="webResource.isAutoUpdate" (change)="webResource.isAutoUpdate = !webResource.isAutoUpdate" />
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -45,8 +50,8 @@
     <div class="m-a-1">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Логи формирования {{build && build.buildName}}</h5>
-          <p class="card-text">{{build&&build.buildLog}}</p>
+          <h5 class="card-header">Логи формирования: {{build && build.buildName}}</h5>
+          <p class="card-text text-newlines">{{build&&build.buildLog}}</p>
         </div>
       </div>
     </div>

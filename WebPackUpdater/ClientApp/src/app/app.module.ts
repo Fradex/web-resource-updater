@@ -10,7 +10,6 @@ import { BuildComponent } from './builds/build.component';
 import { BuildDetailComponent } from "./builds/buildDetail.component";
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-
 @NgModule({
   declarations: [
     AppComponent
