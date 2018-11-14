@@ -62,11 +62,7 @@ namespace WebPackUpdater
 
 
             services.AddSingleton(Configuration);
-            services.AddTransient<IConnectionService, ConnectionService>();
-            services.AddTransient<IScriptsGenerator, ScriptsGenerator>();
-            services.AddTransient<IFileRepository, FilesRepository>();
-            services.AddTransient<IWebResourceRepository, WebResourceRepository>();
-            services.AddTransient<IBuildRepository, BuildRepository>();
+	        services.AddDiDependencies();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

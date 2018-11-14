@@ -15,14 +15,14 @@ namespace WebPackUpdater.Repositories
     {
         private IConfiguration Configuration { get; set; }
         private IServiceProvider ServiceProvider { get; set; }
-        private IWebResourceRepository WebResourceRepository { get; set; }
+        private ICrmWebResourceRepository WebResourceRepository { get; set; }
 
         private WebResourceContext WebResourceContext { get; set; }
 
         private string ScriptsPath { get; set; }
 
         public FilesRepository(IConfiguration configuration,
-            IWebResourceRepository webResourceRepository, IServiceProvider serviceProvider, WebResourceContext webResourceContext)
+            ICrmWebResourceRepository webResourceRepository, IServiceProvider serviceProvider, WebResourceContext webResourceContext)
         {
             Configuration = configuration;
             WebResourceRepository = webResourceRepository;

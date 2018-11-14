@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { BuildModule } from "./builds/build.module";
 import { BuildComponent } from './builds/build.component';
 import { BuildDetailComponent } from "./builds/buildDetail.component";
-import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 @NgModule({
@@ -16,6 +16,7 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
     AppComponent
   ],
   imports: [
+    FlexLayoutModule,
     BrowserModule,
     HttpClientModule,
     FormsModule,

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Http, Request, RequestMethod } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 import { Build } from "./build.model";
+import { WebResource } from "../model/webresource.model";
 import { Inject } from '@angular/core';
 import "rxjs/add/operator/map";
 
@@ -37,25 +38,35 @@ export class RestDataSource {
     return this.sendRequest(RequestMethod.Get, "api/Build/" + id) as Observable<Build>;
   }
 
+  getWebresources(): Observable<WebResource[]> {
+    return this.sendRequest(RequestMethod.Get, "api/WebResources") as Observable<WebResource[]>;
+  }
+
   saveBuild(build: Build): Observable<Build> {
-    return this.sendRequest(RequestMethod.Post, "api/Build",
-      build, true) as Observable<Build>;
+    return this.sendRequest(RequestMethod.Post,
+      "api/Build",
+      build,
+      true) as Observable<Build>;
   }
 
   updateBuild(build): Observable<Build> {
     return this.sendRequest(RequestMethod.Put,
-      `api/Build/${build.id}`, build, true) as Observable<Build>;
+      `api/Build/${build.id}`,
+      build,
+      true) as Observable<Build>;
   }
 
   deleteBuild(id: number): Observable<Build> {
     return this.sendRequest(RequestMethod.Delete,
-      `api/Build/${id}`, null, true) as Observable<Build>;
+      `api/Build/${id}`,
+      null,
+      true) as Observable<Build>;
   }
 
   private sendRequest(verb: RequestMethod,
     url: string,
     body?: Build,
-    auth: boolean = false): Observable<Build | Build[]> {
+    auth: boolean = false): Observable<Build | Build[] | WebResource | WebResource[]> {
 
     debugger;
 

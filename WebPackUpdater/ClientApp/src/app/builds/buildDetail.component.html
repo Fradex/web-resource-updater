@@ -2,10 +2,47 @@
   <a class="navbar-brand">Детали билда</a>
 </div>
 
-<div flex fxLayout="row">
+<div class="row">
+  <button class="btn btn-primary m-t-1 m-l-2" routerLink="/build">Назад</button>
+</div>
+
+<style>
+  .card-flexible {
+    -webkit-flex: 1 1 auto;
+    overflow-y: auto;
+    height: 80vh;
+  }
+
+
+  .card-flexible > *:not(:last-child) { margin-bottom: 32px; }
+</style>
+
+<div class="card-flexible">
+  <div class="m-a-1">
+    <table class="table table-bordered table-striped p-a-1">
+      <thead>
+      <tr>
+        <th>Наименование измененного скрипта</th>
+        <th ></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngIf="editedScripts == 0">
+        <td colspan="2" class="text-xs-center">
+          Your cart is empty
+        </td>
+      </tr>
+      <tr *ngFor="let webResource of webResources">
+        <td>{{webResource.crmFileName}}</td>
+        <td class="text-xs-center">
+          <input type="checkbox" [checked]="webResource.isAutoUpdate" (change)="webResource.isAutoUpdate = !webResource.isAutoUpdate"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
   <div fxFlex="50">
     <div class="m-a-1">
-
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Логи формирования {{build && build.buildName}}</h5>
@@ -14,60 +51,6 @@
       </div>
     </div>
     <div layout="row" flex="50">
-      <table class="table table-bordered table-striped p-a-1">
-        <!--<thead>
-          <tr>
-            <th>Quantity</th>
-            <th>Product</th>
-            <th class="text-xs-right">Price</th>
-            <th class="text-xs-right">Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="cart.lines.length == 0">
-            <td colspan="4" class="text-xs-center">
-              Your cart is empty
-            </td>
-          </tr>
-          <tr *ngFor="let line of cart.lines">
-            <td>
-              <input type="number" class="form-control-sm"
-                     style="width:5em"
-                     [value]="line.quantity"
-                     (change)="cart.updateQuantity(line.product,
-                                    $event.target.value)" />
-            </td>
-            <td>{{line.product.name}}</td>
-            <td class="text-xs-right">
-              {{line.product.price | currency:"USD":true:"2.2-2"}}
-            </td>
-            <td class="text-xs-right">
-              {{(line.lineTotal) | currency:"USD":true:"2.2-2" }}
-            </td>
-            <td class="text-xs-center">
-              <button class="btn btn-sm btn-danger"
-                      (click)="cart.removeLine(line.product.id)">
-                Remove
-              </button>
-            </td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3" class="text-xs-right">Total:</td>
-            <td class="text-xs-right">
-              {{cart.cartPrice | currency:"USD":true:"2.2-2"}}
-            </td>
-          </tr>
-        </tfoot>-->
-      </table>
-    </div>
-
-    <div class="text-xs-center">
-      <button class="btn btn-primary" routerLink="/store">Continue Shopping</button>
-      <button class="btn btn-secondary" routerLink="/checkout">
-        Checkout
-      </button>
     </div>
   </div>
 </div>

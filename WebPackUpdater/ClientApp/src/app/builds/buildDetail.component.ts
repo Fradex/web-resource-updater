@@ -3,6 +3,7 @@ import { BuildDetails } from "../model/buildDetail.model";
 import { Build } from "../model/build.model";
 import { BuildRepository } from "../model/build.repository";
 import { ActivatedRoute } from "@angular/router";
+import { WebResource } from "../model/webresource.model";
 
 @Component({
   moduleId: module.id,
@@ -11,6 +12,8 @@ import { ActivatedRoute } from "@angular/router";
 export class BuildDetailComponent implements OnInit {
 
   public build: Build;
+  public webResources: WebResource[];
+
   constructor(public buildDetails: BuildDetails, private repository: BuildRepository, private route: ActivatedRoute) {
   }
 
@@ -18,8 +21,12 @@ export class BuildDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.repository.getBuild(params['id']).subscribe(data => {
         this.build = data;
-        debugger;
       });
+    });
+
+
+    this.repository.getChangedWebResources().subscribe(data => {
+      this.webResources = data;
     });
   }
 }

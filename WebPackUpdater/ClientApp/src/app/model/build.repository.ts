@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Build } from "./build.model";
 import { RestDataSource } from "./rest.datasource";
 import { Observable } from "rxjs/Observable";
+import { WebResource } from "../model/webresource.model";
 
 @Injectable()
 export class BuildRepository {
@@ -25,6 +26,10 @@ export class BuildRepository {
 
   getBuild(id: string): Observable<Build> {
       return this.dataSource.getBuild(id);
+  }
+
+  getChangedWebResources(): Observable<WebResource[]> {
+    return this.dataSource.getWebresources();
   }
 
   saveBuild(build: Build) {

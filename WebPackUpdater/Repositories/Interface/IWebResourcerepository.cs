@@ -1,15 +1,11 @@
-﻿using System;
-using Microsoft.Xrm.Sdk;
-using WebPackUpdater.Enums;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebPackUpdater.Model;
 
 namespace WebPackUpdater.Repositories.Interface
 {
-    /// <summary>
-    /// Webresource repo
-    /// </summary>
-    public interface IWebResourceRepository
-    {
-        Entity RetrieveWebresource(string name);
-        void Update(Guid id, string name, string filePath, WebResourceType type);
-    }
+	public interface IWebResourceRepository
+	{
+		Task<IEnumerable<WebResourceMap>> GetChangedWebResourcesAsync();
+	}
 }

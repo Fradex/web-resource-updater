@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebPackUpdater.Enums;
 using WebPackUpdater.Generators.Interface;
 using WebPackUpdater.Model;
+using WebPackUpdater.Model.DTO;
 using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Controllers
