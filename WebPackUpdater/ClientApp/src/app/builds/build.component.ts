@@ -5,7 +5,9 @@ import { BuildRepository } from "../model/build.repository";
 import { BuildDetails } from "../model/buildDetail.model";
 import { Router } from "@angular/router";
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { NotifierService } from 'angular-notifier';
+
+import { Message } from 'primeng/api';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
   selector: "build",
@@ -24,7 +26,7 @@ export class BuildComponent {
     private router: Router,
     private http: HttpClient,
     private spinnerService: Ng4LoadingSpinnerService,
-    private notifierService: NotifierService,
+    private messageService: MessageService,
     @Inject('BASE_URL') baseUrl: string) {
     this.baseUrl = baseUrl;
   }
@@ -46,16 +48,16 @@ export class BuildComponent {
 
   runFastBuild() {
     this.spinnerService.show();
-    this.notifierService.notify('info', 'Запущен билд!');
+    this.messageService.add({ severity: 'info', summary: 'Билд', detail: 'Билд запущен!', life: 5000 });
     this.http.post(this.baseUrl + 'api/Webpack/Build', { description: 'Билд скриптов при помощи webpack', name: 'Webpack' })
       .subscribe(result => {
         this.spinnerService.hide();
         this.repository.refreshProducts();
-        this.notifierService.notify('success', 'Билд успешно завершен!');
+        this.messageService.add({ severity: 'success', summary: 'Билд', detail: 'Билд успешно завершен!', life: 5000 });
       },
         error => {
           console.error(error);
-          this.notifierService.notify('error', 'Билд упал!');
+          this.messageService.add({ severity: 'error', summary: 'Билд', detail: 'Произошла ошибка при построении!', life: 5000 });
           this.spinnerService.hide();
           this.repository.refreshProducts();
         });
@@ -71,4 +73,11 @@ export class BuildComponent {
     this.buildDetail.OpenedBuild(build);
     this.router.navigateByUrl("/build/" + build.id);
   }
+}
+
+
+export class MyModel {
+
+  msgs: Message[] = [];
+
 }

@@ -9,17 +9,21 @@ import { BuildModule } from "./builds/build.module";
 import { BuildComponent } from './builds/build.component';
 import { BuildDetailComponent } from "./builds/buildDetail.component";
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     FlexLayoutModule,
     BrowserModule,
     HttpClientModule,
     FormsModule,
     BuildModule,
+    MatButtonModule,
     RouterModule.forRoot([
       {
         path: "build", component: BuildComponent
@@ -37,6 +41,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ])
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [MatButtonModule]
 })
 export class AppModule { }
