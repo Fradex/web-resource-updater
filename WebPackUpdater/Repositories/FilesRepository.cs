@@ -39,7 +39,7 @@ namespace WebPackUpdater.Repositories
         /// <summary>
         /// Автоматически сопоставить файлы и записать их в БД
         /// </summary>
-        public void AutoMapFiles(Build build)
+        public void AutoMapFiles(Build build, bool isStartMapping = false)
         {
             var buildDirectory = Path.Combine(ScriptsPath, Configuration.GetSection("AppSettings")["BuildDirectory"]);
 
@@ -90,12 +90,15 @@ namespace WebPackUpdater.Repositories
                     WebResourceContext.Entry(savedWebResource).State = EntityState.Modified;
                 }
 
-                WebResourceContext.ChangedWebResources.Add(new ChangedWebResource
+                if (!isStartMapping)
                 {
-                    Build = build,
-                    WebResourceMap = savedWebResource,
-                    ChangedDate = DateTime.Now
-                });
+                    WebResourceContext.ChangedWebResources.Add(new ChangedWebResource
+                    {
+                        Build = build,
+                        WebResourceMap = savedWebResource,
+                        ChangedDate = DateTime.Now
+                    });
+                }
             }
 
             WebResourceContext.SaveChanges();

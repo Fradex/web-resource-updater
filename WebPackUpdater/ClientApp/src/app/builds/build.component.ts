@@ -19,6 +19,7 @@ export class BuildComponent {
   public buildsPerPage = 4;
   public selectedPage = 1;
   private baseUrl: string;
+  private buildsChunk: Build[] = [];
   public loading = false;
 
   constructor(private repository: BuildRepository,
@@ -32,9 +33,11 @@ export class BuildComponent {
   }
 
   get builds(): Build[] {
-    let pageIndex = (this.selectedPage - 1) * this.buildsPerPage;
-    return this.repository.getBuilds(this.selectedCategory)
-      .slice(pageIndex, pageIndex + this.buildsPerPage);
+    var builds = this.repository.getBuilds();
+    if (this.buildsChunk.length == 0 && builds.length > 0) {
+      this.buildsChunk = builds.slice(0, this.buildsPerPage);
+    }
+    return builds;
   }
 
   changePage(newPage: number) {
@@ -73,11 +76,13 @@ export class BuildComponent {
     this.buildDetail.OpenedBuild(build);
     this.router.navigateByUrl("/build/" + build.id);
   }
-}
 
+  paginate(event) {
+    this.buildsChunk = this.builds.slice(event.first, event.first + Number(event.rows));
+  }
+}
 
 export class MyModel {
 
   msgs: Message[] = [];
-
 }

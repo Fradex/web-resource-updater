@@ -7,34 +7,20 @@
         Быстрый билд скриптов
     </button>   
 </div>  
-<div class="col-xs-9 p-a-1">  
-    <div *ngFor="let build of builds" class="card card-outline-primary">
-      <h4 class="card-header">
-        {{build.buildName}}
-      </h4>
-      <div class="card-text p-a-1" [class]="build.buildStatusType==2 ? 'alert alert-success':'alert alert-danger'">
-        {{build.buildDescription}}
-        <button class="btn btn-success btn-sm pull-xs-right"
-                (click)="openBuildDetail(build)">
-          Детали
-        </button>
-      </div>
-    </div>   
-    <div class="form-inline pull-xs-left m-r-1">
-        <select class="form-control" [value]="productsPerPage" 
-                (change)="changePageSize($event.target.value)">
-            <option value="3">3 на страницу</option>
-            <option value="4">4 на страницу</option>
-            <option value="6">6 на страницу</option>
-            <option value="8">8 на страницу</option>
-        </select>
+<div class="col-xs-9 p-a-1">
+  <div *ngFor="let build of buildsChunk" class="card card-outline-primary">
+    <h4 class="card-header">
+      {{build.buildName}}
+    </h4>
+    <div class="card-text p-a-1" [class]="build.buildStatusType==2 ? 'alert alert-success':'alert alert-danger'">
+      {{build.buildDescription}}
+      <button class="btn btn-success btn-sm pull-xs-right"
+              (click)="openBuildDetail(build)">
+        Детали
+      </button>
     </div>
-    <div class="btn-group pull-xs-right">
-        <button *counter="let page of pageCount" (click)="changePage(page)"
-            class="btn btn-outline-primary" [class.active]="page == selectedPage">
-                {{page}}
-        </button>
-    </div>     
+  </div>
+  <p-paginator rows="4" [alwaysShow]="false" [totalRecords]="builds&&builds.length" (onPageChange)="paginate($event)" [rowsPerPageOptions]="[4,6,8]" (onLazyLoad)="paginate($event)"></p-paginator>
 </div>
 <ng4-loading-spinner [timeout]="120000" [loadingText]="'Подождите...'"> </ng4-loading-spinner>
 <p-growl [(value)]="msgs"></p-growl>
