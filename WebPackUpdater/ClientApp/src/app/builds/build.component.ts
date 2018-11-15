@@ -1,4 +1,6 @@
-import { Component, Inject } from "@angular/core";
+import {
+  Component, Inject, ChangeDetectorRef
+ } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { Build } from "../model/build.model";
 import { BuildRepository } from "../model/build.repository";
@@ -28,6 +30,7 @@ export class BuildComponent {
     private http: HttpClient,
     private spinnerService: Ng4LoadingSpinnerService,
     private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
     @Inject('BASE_URL') baseUrl: string) {
     this.baseUrl = baseUrl;
   }
@@ -36,6 +39,7 @@ export class BuildComponent {
     var builds = this.repository.getBuilds();
     if (this.buildsChunk.length == 0 && builds.length > 0) {
       this.buildsChunk = builds.slice(0, this.buildsPerPage);
+      this.cdr.detectChanges();
     }
     return builds;
   }
