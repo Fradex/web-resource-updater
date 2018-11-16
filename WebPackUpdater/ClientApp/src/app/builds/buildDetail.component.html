@@ -2,9 +2,20 @@
   <a class="navbar-brand">Детали билда</a>
 </div>
 
-<button class="btn btn-primary m-t-1 m-l-2" routerLink="/build">
-  Назад
-</button>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <button class="btn btn-primary m-t-1 m-l-2" routerLink="/build">
+        Назад
+      </button>
+    </div>
+    <div class="col-md-2 offset-md-7">
+      <button class="btn btn-success float-right m-t-1 m-l-2" (click)="updateAndPublish()">
+        Опубликовать
+      </button>
+    </div>
+  </div>
+</div>
 
 <style>
   .card-flexible {
@@ -59,3 +70,4 @@
     </div>
   </div>
 </div>
+

@@ -17,13 +17,16 @@ export class BuildDetailComponent implements OnInit {
   constructor(public buildDetails: BuildDetails, private repository: BuildRepository, private route: ActivatedRoute) {
   }
 
+  public updateAndPublish() {
+    var ids = this.webResources.filter(x => x.isAutoUpdate).map(x => { return x.id });
+  }
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.repository.getBuild(params['id']).subscribe(data => {
         this.build = data;
       });
     });
-
 
     this.repository.getChangedWebResources().subscribe(data => {
       this.webResources = data;

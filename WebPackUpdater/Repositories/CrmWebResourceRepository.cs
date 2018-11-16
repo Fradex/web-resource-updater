@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
@@ -13,12 +13,22 @@ using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Repositories
 {
+    /// <summary>
+    /// Репозиторий веб-ресурсов CRM
+    /// </summary>
     public class CrmWebResourceRepository : CrmRepositoryBase, ICrmWebResourceRepository
     {
         public CrmWebResourceRepository(IConnectionService connectionService) : base(connectionService)
         {
         }
 
+        /// <summary>
+        /// Обновить запись
+        /// </summary>
+        /// <param name="id">Идентификатор записи в CRM</param>
+        /// <param name="name">Наименование веб-ресурса</param>
+        /// <param name="filePath">Путь до файла</param>
+        /// <param name="type">Тип веб-ресурса</param>
         public void Update(Guid id, string name, string filePath, WebResourceType type = WebResourceType.Auto)
         {
             var record = CreateRecord(name, filePath, type);
@@ -26,6 +36,35 @@ namespace WebPackUpdater.Repositories
             OrganizationService.Update(record);
         }
 
+        /// <summary>
+        /// Опубликовать веб-ресурсы
+        /// </summary>
+        /// <param name="webresourceIds">Идентификаторы веб-ресурсов</param>
+        public void Publish(Guid[] webresourceIds)
+        {
+            if (webresourceIds?.Any() == false)
+            {
+                return;
+            }
+
+            var request = new OrganizationRequest
+            {
+                RequestName = "PublishXml",
+                Parameters = new ParameterCollection
+                {
+                    new KeyValuePair<string, object>("ParameterXml",
+                        $"<importexportxml><webresources>{string.Join("", webresourceIds.Select(id => $"<webresource>{id}</webresource>"))}</webresources></importexportxml>")
+                }
+            };
+            OrganizationService.Execute(request);
+        }
+
+        /// <summary>
+        /// Обновить или создать запись
+        /// </summary>
+        /// <param name="name">Наименование веб-ресурса</param>
+        /// <param name="filePath">Путь до файла</param>
+        /// <param name="type">Тип веб-ресурса</param>
         public Entity CreateOrUpdate(string name, string filePath, WebResourceType type = WebResourceType.Auto)
         {
             var idRecord = RetrieveWebresource(name);
@@ -46,6 +85,12 @@ namespace WebPackUpdater.Repositories
             return record;
         }
 
+        /// <summary>
+        /// Создать запись
+        /// </summary>
+        /// <param name="name">Наименование веб-ресурса</param>
+        /// <param name="filePath">Путь до файла</param>
+        /// <param name="type">Тип веб-ресурса</param>
         public void Create(string name, string filePath, WebResourceType type = WebResourceType.Auto)
         {
             var record = CreateRecord(name, filePath, type);
@@ -73,7 +118,7 @@ namespace WebPackUpdater.Repositories
                 ["webresourcetype"] = new OptionSetValue((int)type),
             };
 
-            if (filePath != null)
+            if (filePath != null && File.Exists(filePath))
             {
                 record["content"] = Convert.ToBase64String(File.ReadAllBytes(filePath));
             }
@@ -86,6 +131,7 @@ namespace WebPackUpdater.Repositories
             return record;
         }
 
+        /// <inheritdoc />
         public Entity RetrieveWebresource(string name)
         {
             try
