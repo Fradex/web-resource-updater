@@ -1,6 +1,6 @@
 import {
-  Component, Inject, ChangeDetectorRef
- } from "@angular/core";
+  Component, Inject, ChangeDetectorRef, ChangeDetectionStrategy 
+} from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { Build } from "../model/build.model";
 import { BuildRepository } from "../model/build.repository";
@@ -12,6 +12,7 @@ import { Message } from 'primeng/api';
 import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: "build",
   moduleId: module.id,
   templateUrl: "build.component.html"
@@ -21,7 +22,7 @@ export class BuildComponent {
   public buildsPerPage = 4;
   public selectedPage = 1;
   private baseUrl: string;
-  private buildsChunk: Build[] = [];
+  private buildsChunk: Build[];
   public loading = false;
 
   constructor(private repository: BuildRepository,
@@ -36,12 +37,13 @@ export class BuildComponent {
   }
 
   get builds(): Build[] {
-    var builds = this.repository.getBuilds();
-    if (this.buildsChunk.length == 0 && builds.length > 0) {
-      this.buildsChunk = builds.slice(0, this.buildsPerPage);
-      this.cdr.detectChanges();
+    var changedBuilds = this.repository.getBuilds();
+    if (changedBuilds.length > 0) {
+        setTimeout(() => {
+            this.buildsChunk = changedBuilds.slice(0, this.buildsPerPage);
+        }, 500);
     }
-    return builds;
+    return changedBuilds;
   }
 
   changePage(newPage: number) {

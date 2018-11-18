@@ -14,5 +14,11 @@ namespace WebPackUpdater.Repositories.Interface
 	    /// </summary>
 	    /// <param name="ids">Идентификаторы веб-ресурсов</param>
 	    void UpdateAndPublish(Guid[] ids);
+
+        /// <summary>
+        /// Удалить опубликованные файлы
+        /// </summary>
+        /// <param name="webresourceIds">Идентификаторы веб-ресурсов</param>
+        void DeleteWebResourcesChanges(Guid[] webresourceIds);
 	}
 }

@@ -51,7 +51,6 @@ namespace WebPackUpdater.Repositories
             var fileNames = Directory.GetFiles(buildDirectory, "*.js", SearchOption.AllDirectories);
 
             var savedWebResources = WebResourceContext.WebResourceMaps.Select(x => x).ToList();
-            WebResourceContext.ChangedWebResources.RemoveRange(WebResourceContext.ChangedWebResources.Select(x => x).ToList());
 
             foreach (var fileName in fileNames)
             {

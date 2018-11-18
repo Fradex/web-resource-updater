@@ -45,6 +45,18 @@ namespace WebPackUpdater.Repositories
             var crmIds = webResources.Select(x => x.CrmWebResourceId).ToArray();
 
             _crmWebResourceRepository.Publish(crmIds);
+            DeleteWebResourcesChanges(ids);
+        }
+
+        /// <summary>
+        /// Удалить опубликованные файлы
+        /// </summary>
+        /// <param name="webresourceIds">Идентификаторы веб-ресурсов</param>
+        public void DeleteWebResourcesChanges(Guid[] webresourceIds)
+        {
+            var itemsToDelete = this.Context.ChangedWebResources.Where(x => webresourceIds.Contains(x.WebResourceMap.Id)).ToList();
+            this.Context.ChangedWebResources.RemoveRange(itemsToDelete);
+            this.Context.SaveChanges();
         }
 
         /// <summary>
