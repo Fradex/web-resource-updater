@@ -32,11 +32,11 @@ import { MatButtonModule } from '@angular/material';
         path: 'build/:id',        
         component: BuildDetailComponent
       },
-      //{
-      //  path: "admin",
-      //  loadChildren: "app/admin/admin.module#AdminModule",
-      //  canActivate: [StoreFirstGuard]
-      //},
+      {
+        path: "admin",
+        loadChildren: "app/admin/admin.module#AdminModule",
+       // canActivate: [StoreFirstGuard]
+      },
       { path: "**", redirectTo: "/build" }
     ])
   ],
