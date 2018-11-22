@@ -1,0 +1,38 @@
+<style>
+  .field-full-width {
+    width: 100%;
+  }
+     
+</style>
+
+<div class="bg-primary p-a-1" [class.bg-warning]="editing">
+  <h5>{{editing  ? "Редактировать" : "Создать"}} соединение.</h5>
+</div>
+<form novalidate #form="ngForm" (ngSubmit)="save(form)">
+  <mat-form-field class="field-full-width">
+    <mat-label>Наименование</mat-label>
+    <input matInput name="name" [(ngModel)]="connection.name" />
+  </mat-form-field>
+  <mat-form-field  class="field-full-width">
+    <mat-label>Строка соединения</mat-label>
+    <input matInput class="form-control" name="connectionString" [(ngModel)]="connection.connectionString" />
+  </mat-form-field>
+  <mat-form-field class="field-full-width">
+    <mat-label>Наименование организации</mat-label>
+    <input matInput class="form-control" name="organizationName" [(ngModel)]="connection.organizationName" />
+  </mat-form-field>
+  <mat-form-field class="field-full-width">
+    <mat-label>Логин</mat-label>
+    <input matInput class="form-control" name="login" [(ngModel)]="connection.login" />
+  </mat-form-field>
+  <mat-form-field class="field-full-width">
+    <mat-label>Пароль</mat-label>
+    <input matInput type="password" class="form-control" name="password" [(ngModel)]="connection.password" />
+  </mat-form-field>
+  <button type="submit" class="btn btn-primary" [class.btn-warning]="editing">
+    {{editing ? "Сохранить" : "Создать"}}
+  </button>
+  <button type="reset" class="btn btn-secondary" routerLink="/admin/main/connection">
+    Отменить
+  </button>
+</form>

@@ -1,0 +1,30 @@
+<table class="table table-sm table-striped">
+  <thead>
+    <tr>
+      <th>Наименование</th>
+      <th>Наименование организации</th>
+      <th>Строка подключения</th>
+      <th>Логин</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let o of getConnections()">
+      <td>{{o.name}}</td>
+      <td>{{o.organizationName}}</td>
+      <td>{{o.connectionString}}</td>
+      <td>{{o.login}}</td>
+      <td>
+        <button class="btn btn-sm btn-warning"
+                [routerLink]="['/admin/main/connection/edit', o.id]">
+          Edit
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="deleteConnection(o.id)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button class="btn btn-primary" routerLink="/admin/main/connection/create">
+  Создать новое соединение
+</button>

@@ -33,7 +33,7 @@ export class BuildRepository {
   }
 
   saveBuild(build: Build) {
-    if (build.id == null || build.id == 0) {
+    if (build.id) {
       this.dataSource.saveBuild(build)
         .subscribe(p => this.builds.push(p));
     } else {
@@ -45,7 +45,7 @@ export class BuildRepository {
     }
   }
 
-  deleteBuild(id: number) {
+  deleteBuild(id: string) {
     this.dataSource.deleteBuild(id).subscribe(p => {
       this.builds.splice(this.builds.
         findIndex(p => p.id == id), 1);

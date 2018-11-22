@@ -92,6 +92,18 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="ClientApp\src\app\admin\connectionEditor.component.ts" />
+    <None Remove="ClientApp\src\app\admin\connectionsTable.component.ts" />
+    <None Remove="ClientApp\src\app\model\connection.model.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\admin\connectionEditor.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\admin\connectionsTable.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\model\connection.model.ts" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

@@ -22,10 +22,10 @@ export class AuthComponent {
                 if (response) {
                     this.router.navigateByUrl("/admin/main");
                 }
-                this.errorMessage = "Authentication Failed";
+                this.errorMessage = "Ошиюка авторизации.";
             });
     } else {
-      this.errorMessage = "Form Data Invalid";
+      this.errorMessage = "Неверные данные пользователя.";
     }
   }
 }

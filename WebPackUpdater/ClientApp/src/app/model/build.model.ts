@@ -1,7 +1,7 @@
 export class Build {
 
   constructor(
-    public id?: number,
+    public id?: string,
     public buildName?: string,
     public buildDescription?: string,
     public buildStatusType?: BuildStatus) {

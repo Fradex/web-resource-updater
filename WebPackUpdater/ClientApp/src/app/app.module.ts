@@ -29,6 +29,9 @@ import { MatButtonModule } from '@angular/material';
         path: "build", component: BuildComponent
       },
       {
+        path: "admin/main/build", component: BuildComponent
+      },
+      {
         path: 'build/:id',        
         component: BuildDetailComponent
       },
