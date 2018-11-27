@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebPackUpdater.Model;
 using WebPackUpdater.Repositories.Interface;
@@ -10,6 +11,7 @@ using WebPackUpdater.Repositories.Interface;
 
 namespace WebPackUpdater.Controllers
 {
+	//[Authorize]
     [Route("api/[controller]")]
     public class BuildController : Controller
     {

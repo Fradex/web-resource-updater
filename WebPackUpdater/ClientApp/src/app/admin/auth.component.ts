@@ -22,7 +22,7 @@ export class AuthComponent {
                 if (response) {
                     this.router.navigateByUrl("/admin/main");
                 }
-                this.errorMessage = "Ошиюка авторизации.";
+                this.errorMessage = "Ошибка авторизации.";
             });
     } else {
       this.errorMessage = "Неверные данные пользователя.";

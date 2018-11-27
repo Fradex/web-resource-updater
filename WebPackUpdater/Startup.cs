@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using WebPackUpdater.Context;
 using WebPackUpdater.Repositories.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
+using WebPackUpdater.Authentication;
 
 
 namespace WebPackUpdater
@@ -44,9 +49,33 @@ namespace WebPackUpdater
 
             services.AddDbContext<WebResourceContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DbContext")));
+		
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(options =>
+				{
+					options.RequireHttpsMetadata = false;
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						// укзывает, будет ли валидироваться издатель при валидации токена
+						ValidateIssuer = true,
+						// строка, представляющая издателя
+						ValidIssuer = AuthOptions.ISSUER,
 
+						// будет ли валидироваться потребитель токена
+						ValidateAudience = true,
+						// установка потребителя токена
+						ValidAudience = MyHttpContext.AppBaseUrl,
+						// будет ли валидироваться время существования
+						ValidateLifetime = true,
 
-            services.AddMvcCore(options =>
+						// установка ключа безопасности
+						IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+						// валидация ключа безопасности
+						ValidateIssuerSigningKey = true,
+					};
+				});
+
+			services.AddMvcCore(options =>
                 {
                     options.ReturnHttpNotAcceptable = true;
                 })
@@ -75,8 +104,9 @@ namespace WebPackUpdater
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+	        app.UseAuthentication();
 
-            app.UseMvc(routes =>
+			app.UseMvc(routes =>
            {
                routes.MapRoute(
                    name: "default",
@@ -96,8 +126,10 @@ namespace WebPackUpdater
                 }
             });
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
+	        app.UseHttpContext();
+
+			// Enable middleware to serve generated Swagger as a JSON endpoint.
+			app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
@@ -109,5 +141,34 @@ namespace WebPackUpdater
                 scope.ServiceProvider.GetService<IFileRepository>().AutoMapFiles(null, true);
             }
         }
+
     }
+	public class MyHttpContext
+	{
+		private static IHttpContextAccessor m_httpContextAccessor;
+
+		public static HttpContext Current => m_httpContextAccessor.HttpContext;
+
+		public static string AppBaseUrl => $"{Current.Request.Scheme}://{Current.Request.Host}{Current.Request.PathBase}";
+
+		internal static void Configure(IHttpContextAccessor contextAccessor)
+		{
+			m_httpContextAccessor = contextAccessor;
+		}
+	}
+
+	public static class HttpContextExtensions
+	{
+		public static void AddHttpContextAccessor(this IServiceCollection services)
+		{
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+		}
+
+		public static IApplicationBuilder UseHttpContext(this IApplicationBuilder app)
+		{
+			MyHttpContext.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
+			return app;
+		}
+	}
+
 }

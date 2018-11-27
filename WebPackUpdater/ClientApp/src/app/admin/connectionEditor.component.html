@@ -17,22 +17,22 @@
     <input matInput class="form-control" name="connectionString" [(ngModel)]="connection.connectionString" required />
   </mat-form-field>
   <mat-form-field class="field-full-width">
-    <mat-label>Наименование организации</mat-label>
-    <input matInput class="form-control" name="organizationName" [(ngModel)]="connection.organizationName" required />
-  </mat-form-field>
-  <mat-form-field class="field-full-width">
     <mat-label>Путь до скриптов</mat-label>
     <input matInput class="form-control" name="scriptsPath" [(ngModel)]="connection.scriptsPath" required />
   </mat-form-field>
   <mat-form-field class="field-full-width">
+    <mat-label>Наименование организации</mat-label>
+    <input matInput class="form-control" name="organizationName" [(ngModel)]="connection.organizationName" required />
+  </mat-form-field>
+  <!--<mat-form-field class="field-full-width">
     <mat-label>Логин</mat-label>
     <input matInput class="form-control" name="login" [(ngModel)]="connection.login" required />
   </mat-form-field>
   <mat-form-field class="field-full-width">
     <mat-label>Пароль</mat-label>
     <input matInput type="password" class="form-control" name="password" [(ngModel)]="connection.password" required />
-  </mat-form-field>
-  <button type="submit" class="btn btn-primary" [class.btn-warning]="editing" disabled="form.isValid">
+  </mat-form-field>-->
+  <button type="submit" class="btn btn-primary" [class.btn-warning]="editing" [disabled]="!form.form.valid">
     {{editing ? "Сохранить" : "Создать"}}
   </button>
   <button type="reset" class="btn btn-secondary" routerLink="/admin/main/connection">
