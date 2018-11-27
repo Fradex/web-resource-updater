@@ -1,5 +1,5 @@
 import {
-  Component, Inject, ChangeDetectorRef, ChangeDetectionStrategy 
+  Component, Inject, ChangeDetectorRef, ChangeDetectionStrategy
 } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 import { Build } from "../model/build.model";
@@ -39,9 +39,7 @@ export class BuildComponent {
   get builds(): Build[] {
     var changedBuilds = this.repository.getBuilds();
     if (changedBuilds.length > 0) {
-        setTimeout(() => {
-            this.buildsChunk = changedBuilds.slice(0, this.buildsPerPage);
-        }, 500);
+      this.buildsChunk = changedBuilds.slice(0, this.buildsPerPage);
     }
     return changedBuilds;
   }
