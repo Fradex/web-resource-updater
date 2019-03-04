@@ -26,7 +26,7 @@ export class ConnectionRepository {
       this.dataSource.saveConnection(connection)
         .subscribe(p => this.connections.push(p));
     } else {
-      this.dataSource.updateBuild(connection)
+      this.dataSource.updateConnection(connection)
         .subscribe(p => {
           this.connections.splice(this.connections.findIndex(p => p.id == connection.id), 1, connection);
         });

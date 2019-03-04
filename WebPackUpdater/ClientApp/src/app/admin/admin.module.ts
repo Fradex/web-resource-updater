@@ -7,7 +7,7 @@ import { AdminComponent } from "./admin.component";
 import { ConnectionsTableComponent } from "./connectionsTable.component";
 import { ConnectionEditorComponent } from "./connectionEditor.component";
 import { AuthGuard } from "./auth.guard";
-import { MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule} from '@angular/material';
+import { MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 
 let routing = RouterModule.forChild([
   { path: "auth", component: AuthComponent },

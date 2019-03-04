@@ -6,6 +6,7 @@ import { Connection } from "./connection.model";
 import { WebResource } from "../model/webresource.model";
 import { Inject } from '@angular/core';
 import "rxjs/add/operator/map";
+import { CookieService } from 'ngx-cookie-service';
 
 const PROTOCOL = "http";
 const PORT = 3500;
@@ -15,7 +16,7 @@ export class RestDataSource {
   baseUrl: string;
   auth_token: string;
 
-  constructor(private http: Http, @Inject('BASE_URL') baseUrl: string) {
+  constructor(private http: Http, private cookieService: CookieService, @Inject('BASE_URL') baseUrl: string) {
     this.baseUrl = baseUrl;
   }
 
@@ -27,6 +28,9 @@ export class RestDataSource {
     })).map(response => {
       let r = response.json();
       this.auth_token = r.access_token ? r.access_token : null;
+      var time = new Date().getTime();
+      var expireTime = time + 1000 * 36000;
+      this.cookieService.set('auth_token', this.auth_token, expireTime);
       return !!r.access_token;
     });
   }
